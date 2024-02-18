@@ -1,0 +1,93 @@
+.App {
+  text-align: center;
+  font-family: 'Inter';
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+.logo {
+  color: chocolate;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: white;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: black;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+#text-progress {
+  color: black;
+  font-size: small;
+  font-style: italic;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+#audios {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.single-audio-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.download-container {
+  background-color: chocolate;
+  border-radius: 50%;
+}
+
+#history-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+
+}
+
+.left-toggle {
+  border-radius: 20px 0px 0px 20px;
+  border-right: 0px;
+}
+
+.right-toggle {
+  border-radius: 0px 20px 20px 0px;
+  border-left: 0px;
+}
+
+.user-input {
+  min-width: 50vw;
+  display: flex;
+  align-items: center;
+  flex-direction: center;
+  justify-content: center;
+  margin: 20px;
+}
