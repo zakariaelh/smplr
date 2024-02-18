@@ -1,4 +1,4 @@
-# clonee2e
+# smplr
 End-to-end platform to create voice cloning samples from youtube videos
 
 This code use the vocal extraction code from @seanghay's repo [uvr](https://github.com/zakariaelh/clonee2e/tree/main)
@@ -17,9 +17,9 @@ cd smplr
 sh download.sh
 ```
 
-2. Set up a [modal account](https://modal.com/) 
+3. Set up a [modal account](https://modal.com/) 
 
-3. Serve remotely
+4. Serve remotely
 
 ```
 modal serve smplr.py
