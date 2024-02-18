@@ -1,2 +1,7 @@
 env/
 uvr5_weights/*.pth
+
+front-end/node_modules
+front-end/build
+
+/build
