@@ -9,6 +9,12 @@ To get started:
 
 ```
 git clone git@github.com:zakariaelh/smplr.git
+cd smplr
+```
+
+2. Download the model weights
+```
+sh download.sh
 ```
 
 2. Set up a [modal account](https://modal.com/) 
