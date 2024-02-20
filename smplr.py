@@ -240,13 +240,11 @@ class VocalExtractor:
                 while True:
                     vol.reload() 
                     l = ['audios/' + i for i in os.listdir('audios/')]
-                    print(l)
+                    # print(l)
                     time.sleep(0.5)
                     if audio_path in l:
                         print('HAHA')
                         break 
-                    
-                print(os.listdir('audios/'))
 
                 save_path = 'audios'
                 vocals_filename = self.pre_fun._path_audio_(
@@ -358,7 +356,6 @@ class Diarizer:
                 l_samples.append(file_name)
 
             vol.commit()
-            print(os.listdir('audios/'))
             
             return l_samples
         except Exception as e:
@@ -387,9 +384,17 @@ def orchestrator(url, segment_length, run_id=None):
     l_vocals = []
     l_false = [False] * len(audio_files)
     l_run_id = [run_id] * len(audio_files)
-    for x in VocalExtractor().process.map(audio_files, l_false, l_run_id):
-        if x is not None:
-            l_vocals.append(x)
+    l_vocals = list(VocalExtractor().process.map(audio_files, l_false, l_run_id))
+    # raise error if they're all None 
+    if all([x is None for x in l_vocals]):
+        update_progress(
+                run_id,
+                "Failed to Extract Vocals from the video",
+                error="All segments returned None"
+            )
+        raise Exception("Vocalization failed as all segments return None")
+    else: 
+        l_vocals = [i for i in l_vocals if i is not None]
     print('list of vocals split and processed', l_vocals)
     t2 = time.time()
     # diarizer
@@ -443,7 +448,7 @@ def retrieve_audio(audio_id, mp3_format=True):
     while True:
         vol.reload() 
         l = os.listdir('audios/')
-        print(l)
+        # print(l)
         time.sleep(0.5)
         if audio_id in l:
             print('HAHA')
