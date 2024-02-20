@@ -64,7 +64,7 @@ with image2.imports():
     from pydub import AudioSegment
      
 with image_fe.imports():
-    from pytube import YouTube
+    from pytube import YouTube, exceptions
 
 def update_progress(run_id, text, perc=None, error=None, is_final = None, results = None):
     if run_id:
@@ -411,17 +411,25 @@ def sendAudioInChunks(file_path):
 
 @app.get('/url-details')
 def validate_url(url):
+    error = "Video cannot be downloaded"
     try:
         yt = YouTube(url)
+        yt.streams.filter(only_audio=True).first()
         title = yt.title 
         length = yt.length
         return {
             "title": title,
             "length": length
         }
+    except exceptions.AgeRestrictedError as age_error:
+        return {
+            "error": error,
+            "reason": "Video is age-restricted",
+            "stack": str(age_error),
+        }
     except Exception as e:
         return {
-            "error": "Video cannot be downloaded",
+            "error": error,
             "trace": str(e)
         }
 

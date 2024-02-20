@@ -9,7 +9,7 @@ import Box from '@mui/material/Box';
 import '@fontsource/inter/300.css'; // Weight 500.
 
 const backendURL = '';
-// const backendURL = 'https://zakariaelh--vocalizer-entrypoint-dev.modal.run'
+// const backendURL = 'https://zakariaelh--smplr-main-dev.modal.run'
 // const backendURL = 'https://zakariaelh--smplr-entrypoint.modal.run';
 
 function retrieveOldSamples() {
@@ -44,6 +44,10 @@ function App() {
   }
 
   function updateProgressBar(text, isFinal, isError) {
+    if ((!isFinal) && (!isError)) {
+      text += '... (Please do not close or refresh this page)';
+    }
+
     // clear any fake progress 
     if (intervalIdRef.current) {
       clearInterval(intervalIdRef.current);
@@ -126,7 +130,11 @@ function App() {
       console.log('video details response', videoDetails);
 
       if (videoDetails.error) {
-        return null
+        if (videoDetails.reason) {
+          return { "reason": videoDetails.reason }
+        } else {
+          return null
+        }
       } else {
         return videoDetails
       }
@@ -144,26 +152,28 @@ function App() {
     // reset progress bar 
     resetProgressBar()
 
-    try {
-      console.log('validate URL', url)
-      updateProgressBar('Validating URL')
-      let segmentLength;
-      // const isValid = true
-      const videoDetails = await getVideoDetails(url);
-      if (!videoDetails) {
-        console.log(videoDetails)
-        updateProgressBar("Invalid URL", false, true);
-        throw new Error('Invalid URL')
-      } else {
-        // handle video details like video length 
-        updateProgressBar(videoDetails.title)
-        // number of chunks to break the video to
-        const numberChunks = Math.max(videoDetails.length < 360 ? Math.floor(videoDetails.length / 60) : 6, 1);
-        // segment length 
-        segmentLength = Math.ceil(videoDetails.length / numberChunks);
-        console.log(`Splitting video in ${numberChunks} chunks with a segment length of ${segmentLength}`);
-      }
+    console.log('validate URL', url)
+    updateProgressBar('Validating URL')
+    let segmentLength;
+    // const isValid = true
+    const videoDetails = await getVideoDetails(url);
+    if (!videoDetails || videoDetails.reason) {
+      console.log(videoDetails);
+      const reason = videoDetails ? `(${videoDetails.reason})` : '';
+      updateProgressBar(`Invalid URL ${reason}`, false, true);
+      return 
+      // throw new Error('Invalid URL')
+    } else {
+      // handle video details like video length 
+      updateProgressBar(videoDetails.title)
+      // number of chunks to break the video to
+      const numberChunks = Math.max(videoDetails.length < 360 ? Math.floor(videoDetails.length / 60) : 6, 1);
+      // segment length 
+      segmentLength = Math.ceil(videoDetails.length / numberChunks);
+      console.log(`Splitting video in ${numberChunks} chunks with a segment length of ${segmentLength}`);
+    }
 
+    try {
       console.log('Processing URL:', url);
 
       updateProgressBar('Contacting the backend')
@@ -233,7 +243,7 @@ function App() {
         },
       }} />
       <p id="text-progress">
-        {textProgress} ... (Please do not close or refresh this page)
+        {textProgress} 
       </p>
     </Box>
   </Container>)
@@ -257,48 +267,48 @@ function App() {
 
     return (
       <div className='user-input'>
-      <Container maxWidth="sm" >
-        <FormControl fullWidth>
-          <InputLabel id="url-select-label">History</InputLabel>
-          <Select
-            labelId="url-select-label"
-            id="demo-simple-select"
-            value={title}
-            label="Title"
-            onChange={handleURLSelection}
-          >
-            {titles.map((title, index) => (
-              <MenuItem key={index} value={title}>{title}</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </ Container>
+        <Container maxWidth="sm" >
+          <FormControl fullWidth>
+            <InputLabel id="url-select-label">History</InputLabel>
+            <Select
+              labelId="url-select-label"
+              id="demo-simple-select"
+              value={title}
+              label="Title"
+              onChange={handleURLSelection}
+            >
+              {titles.map((title, index) => (
+                <MenuItem key={index} value={title}>{title}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </ Container>
       </div>
     )
   }
 
   function urlInput() {
     return (
-    <div className='user-input'>
-    <Container maxWidth="sm">
-      <TextField
-        fullWidth
-        label="Enter YouTube URL"
-        variant="outlined"
-        value={url}
-        onChange={handleUrlChange}
-        margin='normal'
-        style={{
-          'backgroundColor': 'white',
-          'borderRadius': '5px',
-          'margin': '0px'
-        }}
-        InputProps={{
-          autoComplete: 'off', // Disable autofill/autocomplete
-        }}
-      />
-    </Container>
-    </div>
+      <div className='user-input'>
+        <Container maxWidth="sm">
+          <TextField
+            fullWidth
+            label="Enter YouTube URL"
+            variant="outlined"
+            value={url}
+            onChange={handleUrlChange}
+            margin='normal'
+            style={{
+              'backgroundColor': 'white',
+              'borderRadius': '5px',
+              'margin': '0px'
+            }}
+            InputProps={{
+              autoComplete: 'off', // Disable autofill/autocomplete
+            }}
+          />
+        </Container>
+      </div>
     )
   }
 
