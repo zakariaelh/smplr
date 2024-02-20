@@ -236,6 +236,8 @@ class VocalExtractor:
         else: 
             try:
                 update_progress(run_id, "Starting the vocalization process")
+                
+                print(f"processing vocalization for {audio_path}")
                 t1 = time.time()
                 while True:
                     vol.reload() 
@@ -259,7 +261,7 @@ class VocalExtractor:
                 t2 = time.time()
                 print('time to process the vocals (without init)', t2-t1)
                 return vocals_filename
-            except ParameterError as pe:
+            except (ParameterError, ValueError) as pe:
                 print(f"ParameterError in {audio_path}")
                 return None
             except Exception as e:
@@ -321,6 +323,7 @@ class Diarizer:
         
         try:
             update_progress(run_id, "Starting the diarization")
+            print(f"processing diarization for {run_id}")
 
             if isinstance(buffer, list):
                 # read all the audios files 
@@ -369,6 +372,8 @@ class Diarizer:
 # @stub.local_entrypoint()
 @stub.function(image=image_fe, timeout=7200)
 def orchestrator(url, segment_length, run_id=None):
+    print(f"starting the process for {url}")
+    
     update_progress(run_id, "Starting the process")
     # spawn three containers 
     t1 = time.time()
