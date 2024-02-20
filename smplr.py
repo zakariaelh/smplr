@@ -55,6 +55,7 @@ mounts_fe = [
 
 with image.imports():
     from separate import _audio_pre_
+    from librosa.util.exceptions import ParameterError
 
 with image2.imports():
     from torch import device, cuda
@@ -260,6 +261,9 @@ class VocalExtractor:
                 t2 = time.time()
                 print('time to process the vocals (without init)', t2-t1)
                 return vocals_filename
+            except ParameterError as pe:
+                print(f"ParameterError in {audio_path}")
+                return None
             except Exception as e:
                 update_progress(
                     run_id,
@@ -384,7 +388,8 @@ def orchestrator(url, segment_length, run_id=None):
     l_false = [False] * len(audio_files)
     l_run_id = [run_id] * len(audio_files)
     for x in VocalExtractor().process.map(audio_files, l_false, l_run_id):
-        l_vocals.append(x)
+        if x is not None:
+            l_vocals.append(x)
     print('list of vocals split and processed', l_vocals)
     t2 = time.time()
     # diarizer
