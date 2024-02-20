@@ -270,7 +270,7 @@ class VocalExtractor:
                 )
                 raise e 
 
-@stub.cls(gpu=gpu.T4(count=2),image=image2, timeout=3600, container_idle_timeout=10)
+@stub.cls(gpu=gpu.T4(count=2),image=image2, timeout=3600, container_idle_timeout=300)
 class Diarizer:
     @enter()
     def start_pipeline(self):
