@@ -217,7 +217,7 @@ function App() {
             } else if (data.error) {
               clearInterval(intervalId); // Stop the interval
               console.log('Stopping due to error :', data.error);
-              updateProgressBar(data.text, true, true)
+              updateProgressBar(data.text, false, true)
             } else {
               console.log('Received progress: ', data.text);
               updateProgressBar(data.text, false, false)
