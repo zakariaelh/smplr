@@ -37,7 +37,7 @@ mounts=[
             ]
 
 stub = Stub(
-    "smplr", 
+    "vocalizer", 
     # volumes={'/root/audios': vol},
     volumes={'/root/audios': vol, '/root/.cache/torch/pyannote': vol2},
     # mounts=mounts,
@@ -270,7 +270,7 @@ class VocalExtractor:
                 )
                 raise e 
 
-@stub.cls(gpu=gpu.T4(count=2),image=image2, timeout=3600, container_idle_timeout=400)
+@stub.cls(gpu=gpu.T4(count=2),image=image2, timeout=3600, container_idle_timeout=10)
 class Diarizer:
     @enter()
     def start_pipeline(self):
@@ -493,7 +493,7 @@ def local_entry(item: Item):
 
 @stub.function(image=image_fe, mounts=mounts_fe, container_idle_timeout=120)
 @asgi_app()
-def main():
+def entrypoint():
     app.mount(
         "/", staticfiles.StaticFiles(directory="/assets", html=True)
     )
